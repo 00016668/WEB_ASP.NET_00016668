@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WAD.CODEBASE._00016668.Data;
 using WAD.CODEBASE._00016668.DTOs;
 using WAD.CODEBASE._00016668.Models;
+using WAD.CODEBASE._00016668.Repositories;
 
 namespace WAD.CODEBASE._00016668.Controllers
 {
@@ -16,120 +10,72 @@ namespace WAD.CODEBASE._00016668.Controllers
     [ApiController]
     public class GroupsController : ControllerBase
     {
-        private readonly ContactDbContext _context;
+        private readonly IRepository<Groups> _groupRepository;
         private readonly IMapper _mapper;
 
-        public GroupsController(ContactDbContext context, IMapper mapper)
+        public GroupsController(IRepository<Groups> groupRepository, IMapper mapper)
         {
-            _context = context;
+            _groupRepository = groupRepository;
             _mapper = mapper;
         }
 
         // GET: api/Groups
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroupsDbSet()
+        public async Task<ActionResult> Getall()
         {
-            if (_context.GroupsDbSet == null)
-            {
-                return NotFound();
-            }
-            var groups = await _context.GroupsDbSet.ToListAsync();
-            var groupDtos = _mapper.Map<IEnumerable<GroupDto>>(groups);  // Map Groups to GroupDto
+            var groups = await _groupRepository.GetAllAsync();
+            var groupDtos = _mapper.Map<IEnumerable<GroupDto>>(groups);
             return Ok(groupDtos);
         }
 
         // GET: api/Groups/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<GroupDto>> GetGroups(int id)
+        public async Task<ActionResult> GetById(int id)
         {
-          if (_context.GroupsDbSet == null)
-          {
-              return NotFound();
-          }
-            var group = await _context.GroupsDbSet.FindAsync(id);
-
+            var group = await _groupRepository.GetByIdAsync(id);
             if (group == null)
             {
                 return NotFound();
             }
 
-            var groupDto = _mapper.Map<GroupDto>(group);  // Map Group to GroupDto
+            var groupDto = _mapper.Map<GroupDto>(group);
             return Ok(groupDto);
         }
 
         // PUT: api/Groups/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGroups(int id, [FromBody] GroupDto groupDto)
+        public async Task<IActionResult> Update(int id, GroupDto groupDto)
         {
-            if (id != groupDto.GroupId)
+            if (id != groupDto.Id)
             {
                 return BadRequest();
             }
 
-            var group = _mapper.Map<Groups>(groupDto);  // Map GroupDto to Group
-            _context.Entry(group).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GroupsExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            var group = _mapper.Map<Groups>(groupDto);
+            await _groupRepository.UpdateAsync(group);
             return NoContent();
         }
 
         // POST: api/Groups
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<GroupDto>> PostGroups([FromBody] GroupDto groupDto)
+        public async Task<IActionResult> Create(GroupDto groupDto)
         {
-            if (_context.GroupsDbSet == null)
-            {
-                return Problem("Entity set 'ContactDbContext.GroupsDbSet'  is null.");
-            }
-
-            var group = _mapper.Map<Groups>(groupDto);  // Map GroupDto to Group entity
-            _context.GroupsDbSet.Add(group);
-            await _context.SaveChangesAsync();
-
-            var createdGroupDto = _mapper.Map<GroupDto>(group);  // Map newly created Group to GroupDto
-            return CreatedAtAction(nameof(GetGroups), new { id = group.GroupId }, createdGroupDto);
+            var group = _mapper.Map<Groups>(groupDto);
+            await _groupRepository.AddAsync(group);
+            var createdGroupDto = _mapper.Map<GroupDto>(group);
+            return CreatedAtAction(nameof(GetById), new { id = createdGroupDto.Id }, createdGroupDto);
         }
 
         // DELETE: api/Groups/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteGroups(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (_context.GroupsDbSet == null)
-            {
-                return NotFound();
-            }
-            var groups = await _context.GroupsDbSet.FindAsync(id);
-            if (groups == null)
-            {
-                return NotFound();
-            }
+            var group = await _groupRepository.GetByIdAsync(id);
+            if (group == null) { return NotFound(); }
 
-            _context.GroupsDbSet.Remove(groups);
-            await _context.SaveChangesAsync();
-
+            await _groupRepository.DeleteAsync(id);
             return NoContent();
         }
 
-        private bool GroupsExists(int id)
-        {
-            return (_context.GroupsDbSet?.Any(e => e.GroupId == id)).GetValueOrDefault();
-        }
     }
 }

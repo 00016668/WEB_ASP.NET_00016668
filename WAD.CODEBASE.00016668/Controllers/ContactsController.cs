@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WAD.CODEBASE._00016668.Data;
 using WAD.CODEBASE._00016668.DTOs;
 using WAD.CODEBASE._00016668.Models;
 using WAD.CODEBASE._00016668.Repositories;
@@ -17,14 +10,17 @@ namespace WAD.CODEBASE._00016668.Controllers
     [ApiController]
     public class ContactsController : ControllerBase
     {
-
+        private readonly IRepository<Groups> _groupRepository;
         private readonly IRepository<Contacts> _contactsRepository;
         private readonly IMapper _mapper;
 
 
-        public ContactsController(IRepository<Contacts> contactsRepository, IMapper mapper)
+        public ContactsController(IRepository<Contacts> contactsRepository,
+                                    IRepository<Groups> groupRepository,
+                                    IMapper mapper)
         {
             _contactsRepository = contactsRepository;
+            _groupRepository = groupRepository;
             _mapper = mapper;
         }
 
@@ -33,21 +29,19 @@ namespace WAD.CODEBASE._00016668.Controllers
 
         // GET: api/Contacts --  getting all items
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ContactDto>>> GetAll()
+        public async Task<ActionResult> GetAll()
         {
             var contacts = await _contactsRepository.GetAllAsync();
             var contactDtos = _mapper.Map<IEnumerable<ContactDto>>(contacts);
             return Ok(contactDtos);
         }
-            
-        
 
 
-        
+
+
+
         // getting it by id
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Contacts), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetById(int id)
         {
             var resultContact = await _contactsRepository.GetByIdAsync(id);
@@ -63,40 +57,51 @@ namespace WAD.CODEBASE._00016668.Controllers
 
         // Post api/Contacts -- create a new contact
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([FromBody] ContactDto contactDto)
+        public async Task<IActionResult> Create(ContactDto contactDto)
         {
-            if (contactDto == null)
-                return BadRequest();
+            var groupExists = await _groupRepository.GetByIdAsync(contactDto.GroupId);
+            if (groupExists == null)
+            {
+                return BadRequest($"Group with ID {contactDto.GroupId} does not exist.");
+            }
 
-            var contact = _mapper.Map<Contacts>(contactDto);  // Map ContactDto to Contact entity
+            var contact = _mapper.Map<Contacts>(contactDto);
             await _contactsRepository.AddAsync(contact);
-            return CreatedAtAction(nameof(GetById), new { id = contact.ContactId }, contact);
+            var createdContactDto = _mapper.Map<ContactDto>(contact);
+            return CreatedAtAction(nameof(GetById), new { id = createdContactDto.Id }, createdContactDto);
+
         }
 
 
 
         // Put api/Contacts/{id} --->  updating
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update(int id, [FromBody] ContactDto contactDto)
+        public async Task<IActionResult> Update(int id, ContactDto contactDto)
         {
-            if (id != contactDto.ContactId)
-                return BadRequest();
+            if (id != contactDto.Id)
+                return BadRequest("ID mismatch");
 
-            var contact = _mapper.Map<Contacts>(contactDto);  // Map ContactDto to Contact entity
-            await _contactsRepository.UpdateAsync(contact);
+            // Check if the contact exists
+            var existingContact = await _contactsRepository.GetByIdAsync(id);
+            if (existingContact == null)
+                return NotFound("Contact not found");
+
+            // Update the contact properties, excluding GroupName
+            existingContact.FirstName = contactDto.FirstName;
+            existingContact.LastName = contactDto.LastName;
+            existingContact.PhoneNumber = contactDto.PhoneNumber;
+            existingContact.Email = contactDto.Email;
+            existingContact.DateOfBirth = contactDto.DateOfBirth;
+            existingContact.GroupId = contactDto.GroupId;
+
+            await _contactsRepository.UpdateAsync(existingContact);
             return NoContent();
         }
 
 
 
         // Delete api/Contacts/{id} 
-        [HttpDelete("id")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var existingContact = await _contactsRepository.GetByIdAsync(id);

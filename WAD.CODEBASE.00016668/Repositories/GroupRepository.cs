@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
 using WAD.CODEBASE._00016668.Data;
 using WAD.CODEBASE._00016668.Models;
 
@@ -39,6 +38,7 @@ namespace WAD.CODEBASE._00016668.Repositories
         {
             return await _contactDbContext.GroupsDbSet.ToListAsync();
         }
+
 
         // retrieving the enetity using its id
         public async Task<Groups> GetByIdAsync(int id)

@@ -18,7 +18,7 @@ namespace WAD.CODEBASE._00016668.Repositories
         // Add or create a new entity
         public async Task AddAsync(Contacts entity)
         {
-            await _dbContext.Contacts.AddAsync(entity);
+            _dbContext.Contacts.Add(entity);
             await _dbContext.SaveChangesAsync();
         }
 
@@ -36,14 +36,14 @@ namespace WAD.CODEBASE._00016668.Repositories
         // Retrieve all entity from the database
         public async Task<IEnumerable<Contacts>> GetAllAsync()
         {
-            var allItems = await _dbContext.Contacts.ToListAsync();
+            var allItems = await _dbContext.Contacts.Include(t => t.Groups).ToListAsync();
             return allItems;
         }
 
         // Retreive the entity from the database using only an id
         public async Task<Contacts> GetByIdAsync(int id)
         {
-            var item = await _dbContext.Contacts.FindAsync(id);
+            var item = await _dbContext.Contacts.Include(c => c.Groups).FirstOrDefaultAsync(c => c.Id == id);
             return item;
         }
 

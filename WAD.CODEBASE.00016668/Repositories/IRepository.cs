@@ -1,6 +1,6 @@
 ﻿namespace WAD.CODEBASE._00016668.Repositories
 {
-    public interface IRepository <T>
+    public interface IRepository<T>
     {
         Task<IEnumerable<T>> GetAllAsync();
         Task<T> GetByIdAsync(int id);

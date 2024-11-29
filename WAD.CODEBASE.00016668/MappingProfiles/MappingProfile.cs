@@ -9,10 +9,10 @@ namespace WAD.CODEBASE._00016668.MappingProfiles
         public MappingProfile()
         {
             CreateMap<Contacts, ContactDto>()
-                .ForMember(dest => dest.GroupName, opt => opt.MapFrom(src => src.Groups.GroupName));
+                .ForMember(dest => dest.GroupId, opt => opt.MapFrom(src => src.GroupId)); // Maps GroupId
 
-
-            CreateMap<Contacts, ContactDto>().ReverseMap();
+            CreateMap<ContactDto, Contacts>()
+                .ForMember(dest => dest.Groups, opt => opt.Ignore());
 
             CreateMap<Groups, GroupDto>().ReverseMap();
         }

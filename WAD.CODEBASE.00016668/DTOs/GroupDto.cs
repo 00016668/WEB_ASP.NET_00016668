@@ -2,8 +2,8 @@
 {
     public class GroupDto
     {
-        public int GroupId { get; set; }
+        public int Id { get; set; }
         public string GroupName { get; set; }
-        public List<ContactDto> Contacts { get; set; }
+
     }
 }
