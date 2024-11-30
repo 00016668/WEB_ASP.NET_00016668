@@ -52,6 +52,12 @@ The frontend part was developed using Angular, ensuring responsiveness and moder
     => CRUD features
     => Design
 
+Libraries to download:
+    => Microsoft.EntityFrameworkCore
+    => Microsoft.EntityFrameworkCore.SqlServer
+    => Microsoft.EntityFrameworkCore.Tools
+    => AutoMapper
+
 Prerequisites
 To run the application locally, first you need:
     => .NET SDK: Version 6.0 or higher, because it was done on version 6.0
