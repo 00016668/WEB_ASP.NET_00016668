@@ -49,7 +49,7 @@ namespace WAD.CODEBASE._00016668.Controllers
             {
                 return NotFound();
             }
-            var contactDto = _mapper.Map<ContactDto>(resultContact);  // Map Contact to ContactDto
+            var contactDto = _mapper.Map<ContactDto>(resultContact);  
             return Ok(contactDto);
         }
 
@@ -81,7 +81,7 @@ namespace WAD.CODEBASE._00016668.Controllers
             if (id != contactDto.Id)
                 return BadRequest("ID mismatch");
 
-            // Check if the contact exists
+            
             var existingContact = await _contactsRepository.GetByIdAsync(id);
             if (existingContact == null)
                 return NotFound("Contact not found");

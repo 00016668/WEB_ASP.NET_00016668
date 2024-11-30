@@ -6,7 +6,6 @@ namespace WAD.CODEBASE._00016668.Repositories
 {
     public class ContactRepository : IRepository<Contacts>
     {
-        // private entity of db context initiation
         private readonly ContactDbContext _dbContext;
 
         // constructor
