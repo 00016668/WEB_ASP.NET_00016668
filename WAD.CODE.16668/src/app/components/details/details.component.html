@@ -1,0 +1,17 @@
+<div class="details-container">
+    <h2>Contact Details</h2>
+  
+    <div *ngIf="error" class="error-message">
+      <p>{{ error }}</p>
+    </div>
+  
+    <div *ngIf="contact" class="contact-details">
+      <p><strong>First Name:</strong> {{ contact.firstName }}</p>
+      <p><strong>Last Name:</strong> {{ contact.lastName }}</p>
+      <p><strong>Phone Number:</strong> {{ contact.phoneNumber }}</p>
+      <p><strong>Email:</strong> {{ contact.email }}</p>
+      <p><strong>Date of Birth:</strong> {{ contact.dateOfBirth | date }}</p>
+      <p><strong>Group:</strong> {{ contact.group?.groupName || 'N/A' }}</p>
+    </div>
+  </div>
+  

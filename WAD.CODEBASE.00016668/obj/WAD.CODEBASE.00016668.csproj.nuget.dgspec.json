@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\user\\OneDrive\\Desktop\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668.csproj": {}
+    "D:\\WIUT 3-year\\WAD\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668.csproj": {}
   },
   "projects": {
-    "C:\\Users\\user\\OneDrive\\Desktop\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668.csproj": {
+    "D:\\WIUT 3-year\\WAD\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\user\\OneDrive\\Desktop\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668.csproj",
+        "projectUniqueName": "D:\\WIUT 3-year\\WAD\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668.csproj",
         "projectName": "WAD.CODEBASE.00016668",
-        "projectPath": "C:\\Users\\user\\OneDrive\\Desktop\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668.csproj",
+        "projectPath": "D:\\WIUT 3-year\\WAD\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668.csproj",
         "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\user\\OneDrive\\Desktop\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668\\obj\\",
+        "outputPath": "D:\\WIUT 3-year\\WAD\\WAD.CODEBASE.00016668\\WAD.CODEBASE.00016668\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
